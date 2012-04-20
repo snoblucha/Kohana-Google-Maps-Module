@@ -22,11 +22,13 @@ class Gmap_Core
 		'gmap_size_y',
 		'gmap_controls',
 	);
+	
+	protected static $enabled = false;
 	protected static $instances = array();
 	protected $marker = array();
 	protected $polylines = array();
 	protected $polygons = array();
-        protected $geocode_request = array();
+  protected $geocode_request = array();
 	protected $view = NULL;
 	protected static $maptypes = array(
 		'road'      => 'google.maps.MapTypeId.ROADMAP',
@@ -138,26 +140,24 @@ class Gmap_Core
 		return $this;
 	} // function
         
-        /**
-         *
-         * @param string $id
-         * @param string $address
-         * @param array $options
-         * @return Gmap_Core 
-         */
-        public function add_marker_address($id, $address, array $options = array())
+  /**
+  *
+  * @param string $id
+  * @param string $address
+  * @param array $options
+  * @return Gmap_Core 
+  */
+  public function add_marker_address($id, $address, array $options = array())
 	{
 		
 		$available_options = array(
 			'bounds',
 			'location',
 			'regions',
-                        'title',
+      'title',
 			'content',
 			'icon',
-		);
-
-		
+		);		
 
 		$this->geocode_request[$id] = array(
 			'id' => URL::title($id, '_', TRUE),
@@ -305,7 +305,7 @@ class Gmap_Core
 	 * @param string $view Defines a view for rendering.
 	 * @return string
 	 */
-	public function render($view = '')
+	public function render($view = '', $force_enable = false)
 	{
 		// Look, if there's a name for this instance. If not, set one.
 		if (empty($this->_options['instance']))
@@ -366,8 +366,12 @@ class Gmap_Core
 			->bind('geocode_requests', $this->geocode_request)
 			->bind('instances', Gmap::$instances);
 
-		// Render the view.
-		return $this->view->render();
+		// Render the view. 
+		$result = (!self::$enabled || $force_enable ? View::factory('gmap_enable')
+                                                    ->set('options',$this->_options)->render() : '')
+            .$this->view->render();
+    self::$enabled = true; 
+		return $result;
 	} // function
 
 	/**
