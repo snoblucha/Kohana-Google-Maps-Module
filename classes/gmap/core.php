@@ -26,6 +26,7 @@ class Gmap_Core
 	protected $marker = array();
 	protected $polylines = array();
 	protected $polygons = array();
+        protected $geocode_request = array();
 	protected $view = NULL;
 	protected static $maptypes = array(
 		'road'      => 'google.maps.MapTypeId.ROADMAP',
@@ -75,7 +76,7 @@ class Gmap_Core
 	{
 		$available_keys = $this->_options;
 
-		$this->_config = Kohana::config('gmap');
+		$this->_config = Kohana::$config->load('gmap');
 		$this->_options = array();
 
 		// Check if each available key is set. Using Arr::extract filled everything up with NULL.
@@ -134,6 +135,35 @@ class Gmap_Core
 			'options' => Arr::extract($options, $available_options),
 		);
 
+		return $this;
+	} // function
+        
+        /**
+         *
+         * @param string $id
+         * @param string $address
+         * @param array $options
+         * @return Gmap_Core 
+         */
+        public function add_marker_address($id, $address, array $options = array())
+	{
+		
+		$available_options = array(
+			'bounds',
+			'location',
+			'regions',
+                        'title',
+			'content',
+			'icon',
+		);
+
+		
+
+		$this->geocode_request[$id] = array(
+			'id' => URL::title($id, '_', TRUE),
+			'address' => $address,			
+			'options' => Arr::extract($options, $available_options),
+		);
 		return $this;
 	} // function
 
@@ -326,13 +356,14 @@ class Gmap_Core
 		{
 			$this->_options['view'] = $this->_config->default_view;
 		} // if
-
+                
 		// Bind the necessary variables.
 		$this->view = View::factory($this->_options['view'])
 			->bind('options', $this->_options)
 			->bind('marker', $this->marker)
 			->bind('polylines', $this->polylines)
 			->bind('polygons', $this->polygons)
+			->bind('geocode_requests', $this->geocode_request)
 			->bind('instances', Gmap::$instances);
 
 		// Render the view.

@@ -1,101 +1,173 @@
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=<?php echo ($options['sensor']) ? 'true' : 'false'; ?>"></script>
 <script type="text/javascript">
-var gmaps_instance_<?php echo $options['instance']; ?> = gmaps_instance_<?php echo $options['instance']; ?> || {};
+    
+    function Gmap(options){
+        
+        this.options = options;
+        this.polyline_coords = {};
+        this.polylines = {};
+        this.polygons = {};
+        this.polygon_coords = {};
+        this.markers = {};
+        this.info_windows = {};
+        this.geocode_request = {};    
+        this.geocode_result = {};  
+        
+    };
+    
+    
+    Gmap.prototype.addPolyline = function(polyline){
+       
+        this.polyline_coords[polyline['id']] = [];
+                
+        for(j in polyline['coords']) {
+            this.polyline_coords[polyline['id']].push( new google.maps.LatLng( polyline['coords'][j][0], polyline['coords'][j][0]));
+        }
+                
+        this.polylines[polyline['id']] = new google.maps.Polyline({
+            path: this.polyline_coords[polyline['id']],
+            strokeColor: polyline['options']['strokeColor'],
+            strokeOpacity: polyline['options']['strokeOpacity'],
+            strokeWeight: polyline['options']['strokeWeight']
+        });
 
-gmaps_instance_<?php echo $options['instance']; ?>.initialize = function() {
-	var options = {
-		zoom: <?php echo $options['zoom']; ?>,
-		center: new google.maps.LatLng(<?php echo str_replace(',', '.', $options['lat']); ?>, <?php echo str_replace(',', '.', $options['lng']); ?>),
-		mapTypeId: <?php echo $options['maptype']; ?>,
-		<?php if ($options['gmap_controls']['maptype']['display']): ?>
-		mapTypeControl: true,
-		mapTypeControlOptions: <?php echo Gmap::clean_json_string(json_encode(Arr::extract($options['gmap_controls']['maptype'], array('style', 'position')))); ?>,
-		<?php else: ?>
-		mapTypeControl: false,
-		<?php endif; ?>
+        this.polylines[polyline['id']].setMap(this.map);
+    }
+    
+    Gmap.prototype.addPolygon = function(polygon){
+        
+        this.polygon_coords[polygon['id']] = [];
+        for( i in polygon['coords']){
+            this.polygon_coords[polygon['id']].push(new google.maps.LatLng(polygon['coords'][i][0], polygon['coords'][i][1]));
+        }
+        
+        this.polygons[polygon['id']] = new google.maps.Polygon({
+            paths: this.polygon_coords[polygon['id']],
+            strokeColor: polygon['options']['strokeColor'],
+            strokeOpacity: polygon['options']['strokeOpacity'],
+            strokeWeight: polygon['options']['strokeWeight'],
+            fillColor: polygon['options']['fillColor'],
+            fillOpacity: polygon['options']['fillOpacity']
+        });
 
-		<?php if ($options['gmap_controls']['navigation']['display']): ?>
-		navigationControl: true,
-		navigationControlOptions: <?php echo Gmap::clean_json_string(json_encode(Arr::extract($options['gmap_controls']['navigation'], array('style', 'position')))); ?>,
-		<?php else: ?>
-		navigationControl: false,
-		<?php endif; ?>
+        this.polygons[polygon['id']].setMap(this.map);
+    }
+    
+    Gmap.prototype.initialize = function(markers, polylines, polygons, gcrequests) {
+        var options = {};        
+        options.center =  new google.maps.LatLng(this.options.lat, this.options.lng);        
+        options.zoom = this.options.zoom;
+        options.mapTypeId =  eval(this.options.maptype);
+        
+        if (this.options['gmap_controls']['maptype']['display']){
+            options.mapTypeControl = true;
+            options.mapTypeControlOptions = {}
+            options.mapTypeControlOptions.style = eval(this.options.gmap_controls.maptype.style);
+            options.mapTypeControlOptions.position = eval(this.options.gmap_controls.maptype.position);                     
+        } else {
+            options.mapTypeControl = false;
+        }
+        
+        if (this.options['gmap_controls']['navigation']['display']){
+            options.navigationControl = true;
+            options.navigationControlOptions = {}
+            options.navigationControlOptions.style = eval(this.options.gmap_controls.navigation.style);
+            options.navigationControlOptions.position = eval(this.options.gmap_controls.navigation.position);                     
+        } else {
+            options.navigationControl = false;
+        }
+        
+        if (this.options['gmap_controls']['scale']['display']){
+            options.scaleControl = true;
+            options.scaleControlOptions = {}
+            options.scaleControlOptions.style = eval(this.options.gmap_controls.scale.style);
+            options.scaleControlOptions.position = eval(this.options.gmap_controls.scale.position);                     
+        } else {
+            options.scaleControl = false;
+        }
+        
+    
+    
+        this.map = new google.maps.Map(document.getElementById("gmap_"+this.options.instance), options);       
+        
+        if(polylines){
+            for(i in polylines){
+                this.addPolyline(polylines[i]);
+            }
+        }
 
-		<?php if ($options['gmap_controls']['scale']['display']): ?>
-		scaleControl: true,
-		<?php if ($options['gmap_controls']['scale']['position'] !== NULL): ?>
-		scaleControlOptions: {
-			position: <?php echo $options['gmap_controls']['scale']['position']; ?>
-		}
-		<?php endif; ?>
-		<?php else: ?>
-		scaleControl: false
-		<?php endif; ?>
-	};
+        if(polygons){
+            for(i in polygons) this.addPolygon(polygons[i]);
+        }
 
-	var map = new google.maps.Map(document.getElementById("gmap_<?php echo $options['instance']; ?>"), options);
+        if(markers){
+            for(i in markers){
+                this.addMarker(markers[i]);
+            }
+        }       
+       
+        if(gcrequests){
+            for(i in gcrequests){
+                this.geocode(gcrequests[i]);
+            }
+        }      
+    };
 
-	<?php foreach ($polylines as $polyline): ?>
-		var polyline_coords_<?php echo $polyline['id']; ?> = [
-		<?php foreach ($polyline['coords'] as $coodinates): ?>
-			new google.maps.LatLng(<?php echo $coodinates[0] . ',' . $coodinates[1]; ?>),
-		<?php endforeach; ?>
-		];
-
-		var polyline_<?php echo $polyline['id']; ?> = new google.maps.Polyline({
-			path: polyline_coords_<?php echo $polyline['id']; ?>,
-			strokeColor: "<?php echo $polyline['options']['strokeColor']; ?>",
-			strokeOpacity: <?php echo $polyline['options']['strokeOpacity']; ?>,
-			strokeWeight: <?php echo $polyline['options']['strokeWeight']; ?>,
-		});
-
-		polyline_<?php echo $polyline['id']; ?>.setMap(map);
-	<?php endforeach; ?>
-
-
-	<?php foreach ($polygons as $polygon): ?>
-		var polygon_coords_<?php echo $polygon['id']; ?> = [
-		<?php foreach ($polygon['coords'] as $coodinates): ?>
-			new google.maps.LatLng(<?php echo $coodinates[0] . ',' . $coodinates[1]; ?>),
-		<?php endforeach; ?>
-		];
-
-		var polygon_<?php echo $polygon['id']; ?> = new google.maps.Polygon({
-			paths: polygon_coords_<?php echo $polygon['id']; ?>,
-			strokeColor: "<?php echo $polygon['options']['strokeColor']; ?>",
-			strokeOpacity: <?php echo $polygon['options']['strokeOpacity']; ?>,
-			strokeWeight: <?php echo $polygon['options']['strokeWeight']; ?>,
-			fillColor: "<?php echo $polygon['options']['fillColor']; ?>",
-			fillOpacity: <?php echo $polygon['options']['fillOpacity']; ?>,
-		});
-
-		polygon_<?php echo $polygon['id']; ?>.setMap(map);
-	<?php endforeach; ?>
-
-	<?php foreach ($marker as $mark): ?>
-		var marker_<?php echo $mark['id']; ?> = new google.maps.Marker({
-			position: new google.maps.LatLng(<?php echo str_replace(',', '.', $mark['lat']); ?>, <?php echo str_replace(',', '.', $mark['lng']); ?>),
-			map: map,
-			title: "<?php echo $mark['options']['title']; ?>",
-			<?php echo (isset($mark['options']['icon'])) ? 'icon: "'.$mark['options']['icon'].'",' : ''; ?>
-		});
-
-		<?php if (isset($mark['options']['content'])): ?>
-		var infowin_<?php echo $mark['id']; ?> = new google.maps.InfoWindow({
-			content: "<?php echo addslashes($mark['options']['content']); ?>"
-		});
-
-		google.maps.event.addListener(marker_<?php echo $mark['id']; ?>, 'click', function() {
-			infowin_<?php echo $mark['id']; ?>.open(map, marker_<?php echo $mark['id']; ?>);
-		});
-		<?php endif; ?>
-	<?php endforeach; ?>
-};
-
-window.onload = (function(){
-	<?php foreach ($instances as $instance): ?>
-	gmaps_instance_<?php echo $instance; ?>.initialize();
-	<?php endforeach; ?>
-});
+    Gmap.prototype.geocode = function(request){
+        this.geocode_request[request['id']] = request;        
+        var geocoder = new google.maps.Geocoder();
+        var gmRequest = {};
+        var This = this;
+        gmRequest.address = request.address;
+        geocoder.geocode(gmRequest, function(result, status){                        
+            if(status == google.maps.GeocoderStatus.OK) {//address found - add marker                
+                This.geocode_result[request['id']] = result;//store result 
+                request.lat = result[0].geometry.location.lat();
+                request.lng = result[0].geometry.location.lng();
+                This.addMarker(request);
+            }
+        });
+        
+    }
+    
+    Gmap.prototype.addMarker = function(marker){
+        var options = {
+            position: new google.maps.LatLng(marker.lat, marker.lng),
+            map: this.map,
+            title: marker.options.title
+        };
+        if(marker.options.icon){
+            options.icon = marker.options.icon;
+        }
+        this.markers[marker.id] = new google.maps.Marker(options);
+        if(marker.options.content){
+            this.info_windows[marker.id] = new google.maps.InfoWindow({
+                content: marker.options.content
+            });
+        }
+        var This = this;
+        google.maps.event.addListener(this.markers[marker.id], 'click', function() {
+            This.info_windows[marker.id].open(This.map, This.markers[marker.id]);
+        });
+                
+    };
+    
+    
+    var gmaps = [];
+    window.onload = (function(){      
+    
+<?php foreach ($instances as $instance): ?>
+            gmaps['<?php echo $instance; ?>'] = new Gmap(<?= json_encode($options) ?>);
+            var markers = <?= json_encode($marker) ?>;
+            var polylines = <?= json_encode($polylines) ?>;
+            var polygons = <?= json_encode($polygons) ?>;
+            var gcrequests = <?= json_encode($geocode_requests) ?>;
+                    
+            gmaps['<?php echo $instance; ?>'].initialize(markers, polylines, polygons, gcrequests);            
+            
+<?php endforeach; ?>
+    });
 </script>
-<div id="gmap_<?php echo $options['instance']; ?>" style="width:<?php echo $options['gmap_size_x']; ?>; height:<?php echo $options['gmap_size_y']; ?>"></div>
+<div id="gmap_<?php echo $options['instance']; ?>" 
+     style="width:<?php echo $options['gmap_size_x']; ?>; height:<?php echo $options['gmap_size_y']; ?>">
+</div>
