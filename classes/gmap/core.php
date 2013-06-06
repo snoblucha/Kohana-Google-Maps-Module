@@ -22,12 +22,13 @@ class Gmap_Core
 		'gmap_size_y',
 		'gmap_controls',
 	);
-	
+
 	protected static $enabled = false;
 	protected static $instances = array();
 	protected $marker = array();
 	protected $polylines = array();
 	protected $polygons = array();
+
   protected $geocode_request = array();
 	protected $view = NULL;
 	protected static $maptypes = array(
@@ -139,17 +140,17 @@ class Gmap_Core
 
 		return $this;
 	} // function
-        
+
   /**
   *
   * @param string $id
   * @param string $address
   * @param array $options
-  * @return Gmap_Core 
+  * @return Gmap_Core
   */
   public function add_marker_address($id, $address, array $options = array())
 	{
-		
+
 		$available_options = array(
 			'bounds',
 			'location',
@@ -157,11 +158,11 @@ class Gmap_Core
       'title',
 			'content',
 			'icon',
-		);		
+		);
 
 		$this->geocode_request[$id] = array(
 			'id' => URL::title($id, '_', TRUE),
-			'address' => $address,			
+			'address' => $address,
 			'options' => Arr::extract($options, $available_options),
 		);
 		return $this;
@@ -175,7 +176,7 @@ class Gmap_Core
 	 * @uses Validate::color
 	 * @param string $id
 	 * @param array  $coordinates
-	 * @param array  $options
+	 * @param array  $options : 'strokeColor', 'strokeOpacity', 'strokeWeight', 'fillColor', 'fillOpacity',
 	 * @return Gmap
 	 */
 	public function add_polygon($id, array $coordinates, array $options = array())
@@ -230,7 +231,7 @@ class Gmap_Core
 	 * @uses Validate::color
 	 * @param string $id
 	 * @param array  $coordinates
-	 * @param array  $options
+	 * @param array  $options : 'strokeColor', 'strokeOpacity', 'strokeWeight'
 	 * @return Gmap
 	 */
 	public function add_polyline($id, array $coordinates, array $options = array())
@@ -356,7 +357,7 @@ class Gmap_Core
 		{
 			$this->_options['view'] = $this->_config->default_view;
 		} // if
-                
+
 		// Bind the necessary variables.
 		$this->view = View::factory($this->_options['view'])
 			->bind('options', $this->_options)
@@ -366,11 +367,11 @@ class Gmap_Core
 			->bind('geocode_requests', $this->geocode_request)
 			->bind('instances', Gmap::$instances);
 
-		// Render the view. 
+		// Render the view.
 		$result = (!self::$enabled || $force_enable ? View::factory('gmap_enable')
                                                     ->set('options',$this->_options)->render() : '')
-            .$this->view->render();
-    self::$enabled = true; 
+                           .$this->view->render();
+                self::$enabled = true;
 		return $result;
 	} // function
 

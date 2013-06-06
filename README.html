@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>README</title>
+<style type="text/css">/*...*/</style>
+</head>
+<body>
+<h1>Kohana Google Maps Module V1.3</h1><p>With this module you can easily add a Google Map to your Kohana installation!</p><p>The Google Map module has NO dependency to other modules!</p><h2>Features</h2>
+<ul>
+  <li>Display a Google-Map by just echo'ing an instance of the "Gmap" class</li>
+  <li>Setting several map-types (road, satellite, hybrid and terrain)</li>
+  <li>Setting sensor-parameter (for mobile devices)</li>
+  <li>Adding markers to the map (including custom icon and Google Maps popups)</li>
+  <li>Adding polylines to the map</li>
+  <li>Adding polygons to the map</li>
+  <li>Setting the positions and types for the map-controls</li>
+</ul><h2>Features to come</h2><p>The following features shall be implemented during development:</p>
+<ul>
+  <li>Cleaning up the Google Map-view (Maybe moving the javascript to a sub-views?)</li>
+</ul><h2>Usage</h2><p>The usage of this module is as easy as it could be! Simply activate the module in your bootstrap.php</p>
+<pre><code>/**
+ * Enable modules. Modules are referenced by a relative or absolute path.
+ */
+Kohana::modules(array(
+    // ...
+    &#39;gmap&#39;       =&gt; MODPATH.&#39;gmap&#39;,       // A simple google-maps module
+));
+</code></pre><p>Then you'll just echo an instance of the gmap class in your action... For example:</p>
+<pre><code>public function action_index()
+{
+    $this-&gt;template-&gt;map = Gmap::factory();
+} // function
+</code></pre><p>This is a more advanced example with usage of various options...</p>
+<pre><code>public function action_index()
+{
+    $gmap = Gmap::factory(
+         array(
+          &#39;zoom&#39; =&gt; 4,
+          &#39;sensor&#39; =&gt; FALSE,
+         ))
+       -&gt;add_marker(&#39;Marker A&#39;, 51.15, 6.83)
+       -&gt;add_marker(&#39;Marker B&#39;, 51.15, 6.93,
+         array(
+          &#39;content&#39; =&gt; &#39;&lt;p&gt;Put HTML here. &quot;Quotes&quot; and \&#39;singlequotes\&#39;&lt;/p&gt;&#39;,
+          &#39;icon&#39; =&gt; &#39;/path/to/your.icon&#39;
+         ))
+                    -&gt;add_marker_address(&#39;Marker A&#39;, &quot;Some street 125, City&quot;) // options can be passed as above
+       -&gt;set_gmap_size(&#39;100%&#39;, 500); // Will output &quot;width: 100%; height: 500px&quot;
+
+    // This will render the Google Map.
+    $this-&gt;template-&gt;map = $gmap;
+
+    // Or...
+    $this-&gt;template-&gt;map = $gmap-&gt;render();
+
+    // Or rendering a own Google Map view.
+    $this-&gt;template-&gt;map = $gmap-&gt;render(&#39;gmap_view_2&#39;);
+} // function
+</code></pre><p>Yes, it's that easy ;)</p><h2>Javascript access</h2><p>In javascript the gmaps variable is created. It is javascript object see <code>views/gmap_enable.php</code>. Each map instance is accessible in javascript by gmaps[instance_name].</p><h3>Javascript constructor</h3>
+<pre><code>function Gmap(options){
+
+    this.options = options;
+    this.polyline_coords = {};
+    this.polylines = {};
+    this.polygons = {};
+    this.polygon_coords = {};
+    this.markers = {};
+    this.info_windows = {};
+    this.geocode_request = {};
+    this.geocode_result = {};
+};
+</code></pre><h2>Variables in javascript</h2>
+<pre><code>Gmap::factory(array(&#39;instance_name&#39;=&gt;&#39;myMap&#39;))
+        -&gt;add_marker_address(&#39;my_marker&#39;,&#39;address, city&#39;)
+        -&gt;render();
+</code></pre>
+<ul>
+  <li>In javascript you will then have varible <code>gmaps[&#39;myMap&#39;]</code>.</li>
+  <li><code>gmaps[&#39;myMap&#39;].map</code> is instance of <code>google.maps.Map</code>.</li>
+  <li><code>gmaps[&#39;markers&#39;][&#39;my_marker&#39;]</code> is instance of <code>google.maps.Marker</code>.</li>
+  <li><code>In gmaps[&#39;myMap&#39;].geocode_result[&#39;my_marker&#39;]</code> is result from the call to <code>geocoder.geocode</code></li>
+</ul>
+</body>
+</html>
