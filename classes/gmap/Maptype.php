@@ -20,6 +20,8 @@ class Gmap_Maptype {
         return $this->value;
     }
 
+    
+
     public static function ROAD()
     {
         return new Gmap_Maptype(self::MAPTYPE_ROAD);
@@ -40,9 +42,25 @@ class Gmap_Maptype {
         return new Gmap_Maptype(self::MAPTYPE_TERRAIN);
     }
 
-    private function __construct($type)
+    /**
+     *
+     * @param string $type May be one of the 'satellite', 'hybrid', 'terrain', 'roads' or one of Const defined in class
+     * @throws UnexpectedValueException
+     */
+    public function __construct($type)
     {
-        $this->value = $type;
+        if (in_array($type, self::$maptypes))
+        {
+            $this->value = $type;
+        }
+        else if (isset(self::$maptypes[$type]))
+        {
+            $this->value = self::$maptypes[$type];
+        }
+        else
+        {
+            throw new UnexpectedValueException($type);
+        }
     }
 
 }

@@ -4,28 +4,25 @@
 
 return array (
 	// Default map-center.
-	'default_lat' => 51.1731,
-	'default_lng' => 6.8328,
+	'lat' => 50.5,
+	'lng' => 14,
 
 	// Default zoom-level.
-	'default_zoom' => 12,
+	'zoom' => 12,
 
 	// Default "sensor" setting - Used for mobile devices.
-	'default_sensor' => FALSE,
+	'sensor' => FALSE,
 
 	// Default map-type.
-	'default_maptype' => 'road',
-
-	// The instance will be set in the render method to a random string (if this value is empty).
-	'instance' => '',
+	'maptype' => 'road', //satellite, hybrid, terrain
 
 	// Default view-options.
-	'default_view' => 'gmap',
-	'default_gmap_size_x' => '100%',
-	'default_gmap_size_y' => '100%',
+	'view' => 'gmap',
+	'width' => '600',
+	'height' => '600',
 
 	// Default Google Maps controls.
-	'default_gmap_controls' => array(
+	'controls' => array(
 		'maptype' => array(
 			'display' => TRUE,
 			'style' => 'default',
@@ -41,19 +38,17 @@ return array (
 			'position' => NULL,
 		),
 	),
-	
+
 	// Default options for polylines.
-	'default_polyline_options' => array(
+	'polyline' => array(
 		'strokeColor' => '#000',
 		'strokeOpacity' => 1,
 		'strokeWeight' => 3,
-	),
-	
+            ),
+
 	// Default options for polygons.
-	'default_polygon_options' => array(
-		'strokeColor' => '#000',
-		'strokeOpacity' => 1,
-		'strokeWeight' => 3,
+	'polygon' => array(
+		//stroke params are taken from polyline
 		'fillColor' => '#000',
 		'fillOpacity' => .5,
 	),
