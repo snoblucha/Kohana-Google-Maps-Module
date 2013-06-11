@@ -133,15 +133,15 @@ function Gmap(options){
         var options = {
             position: new google.maps.LatLng(marker.lat, marker.lng),
             map: this.map,
-            title: marker.options.title
+            title: marker.title
         };
-        if(marker.options.icon){
-            options.icon = marker.options.icon;
+        if(marker.icon){
+            options.icon = marker.icon;
         }
         this.markers[marker.id] = new google.maps.Marker(options);
-        if(marker.options.content){
+        if(marker.content){
             this.info_windows[marker.id] = new google.maps.InfoWindow({
-                content: marker.options.content
+                content: marker.content
             });
         }
         var This = this;
