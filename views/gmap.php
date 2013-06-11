@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    window.onload = (function() {
+    $(function(){
         gmaps['<?php echo $instance->getId() ?>'] = new Gmap(<?= json_encode($instance->getOptions()) ?>);
 
         gmaps['<?php echo $instance->getId(); ?>'].initialize(function() {

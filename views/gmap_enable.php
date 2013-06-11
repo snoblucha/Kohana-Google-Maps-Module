@@ -89,10 +89,11 @@
 
 
         this.map = new google.maps.Map(document.getElementById("gmap_" + this.options.id), options);
-
+        
         if (typeof onInitialized == 'function') {
             onInitialized();
         }
+
 
 
     };
@@ -139,7 +140,5 @@
 
     };
 
-
-    var gmaps = [];
-    var markers, polylines, polygons, gcrequests;
+    var gmaps = {};
 </script>
