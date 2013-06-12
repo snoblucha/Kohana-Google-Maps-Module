@@ -5,10 +5,14 @@ class Gmap_Polyline extends Gmap_Object {
     private $options = array();
     private $coords = array();
 
+    private $bounds;
+
+
     function __construct($id)
     {
         parent::__construct($id);
         $this->options = Kohana::$config->load('gmap.polygon');
+        $this->bounds = new Gmap_Bounds();
     }
 
 
@@ -35,7 +39,7 @@ class Gmap_Polyline extends Gmap_Object {
     }
 
     /**
-     * 
+     *
      * @param float $strokeWeight
      * @return Gmap_Polyline
      */
@@ -48,6 +52,8 @@ class Gmap_Polyline extends Gmap_Object {
     public function addPoint($lat, $lng)
     {
         $this->coords[] = array($lat, $lng);
+        $this->bounds->addLatLng($lat, $lng);
+
         return $this;
     }
 
@@ -56,6 +62,14 @@ class Gmap_Polyline extends Gmap_Object {
         return parent::getOptions() + $this->options +  array(
             'coords' => $this->coords,
         );
+    }
+
+    /**
+     *
+     * @return Gmap_Bounds
+     */
+    public function getBounds(){
+        return $this->bounds;
     }
 
 }

@@ -25,12 +25,12 @@ return array (
 	'controls' => array(
 		'maptype' => array(
 			'display' => TRUE,
-			'style' => 'default',
-			'position' => NULL,
+			'style' => 'default', //see Gmap_Controls_Maptype
+			'position' => NULL, //top, top_left, and vice versa
 		),
 		'navigation' => array(
 			'display' => TRUE,
-			'style' => 'default',
+			'style' => 'default',//see Gmap_Controls_Navigation
 			'position' => NULL,
 		),
 		'scale' => array(

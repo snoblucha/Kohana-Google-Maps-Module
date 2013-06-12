@@ -1,7 +1,8 @@
 # Kohana Google Maps Module V1.3
 With this module you can easily add a Google Map to your Kohana installation!
 
-The Google Map module has NO dependency to other modules!
+The Google Map module has NO dependency to other modules! Just jQuery. For multiple maps
+compatibility.
 
 ## Features
 
@@ -40,31 +41,42 @@ This is a more advanced example with usage of various options...
 
 	public function action_index()
 	{
-		$gmap = Gmap::factory(
-				array(
-					'zoom' => 4,
-					'sensor' => FALSE,
-				))
-			->add_marker('Marker A', 51.15, 6.83)
-			->add_marker('Marker B', 51.15, 6.93,
-				array(
-					'content' => '<p>Put HTML here. "Quotes" and \'singlequotes\'</p>',
-					'icon' => '/path/to/your.icon'
-				))
-                        ->add_marker_address('Marker A', "Some street 125, City") // options can be passed as above
-			->set_gmap_size('100%', 500); // Will output "width: 100%; height: 500px"
+            $gmap = Gmap::factory('map1');
 
-		// This will render the Google Map.
-		$this->template->map = $gmap;
+            //set map type
+            $gmap->setMaptype(Gmap_Maptype::HYBRID());
 
-		// Or...
-		$this->template->map = $gmap->render();
+            $gmap->getControls()->getMaptype()->setType(Gmap_Controls_Maptype::TYPE_HORIZONTAL);
 
-		// Or rendering a own Google Map view.
-		$this->template->map = $gmap->render('gmap_view_2');
-	} // function
+            //positions of controls - maptype and navigation
+            $gmap->getControls()->getMaptype()->setPosition(Gmap_Controls_Maptype::POSITION_BOTTOM_LEFT);
 
-Yes, it's that easy ;)
+            //hide the controls
+            $gmap->getControls()->getNavigation()->setDisplay(false);
+
+            $gmap->setZoom(11);
+            $gmap->addMarker(Gmap_Marker::factory('test', 50.6, 14.0)->setContent('Test content'));
+            $gmap->addMarker(Gmap_Marker::factory('test_no_content', 50.6, 14.5));
+            $gmap->addMarker(Gmap_Marker::factory('test_no_content_icon', 50.2, 14.4)->setIcon('/img/heating-and-aircon.png'));
+
+            //geocoding
+            $gmap->addGeocode(Gmap_Geocode::geocode('adresa','Anezky Ceske 629/3, Usti nad Labem'));
+
+            //polyline
+
+            $polygon = new Gmap_Polygon('square');
+            $polygon->addPoint(49, 14)->addPoint(48, 14)->addPoint(48, 13)->addPoint(49, 13);
+            $polygon->setFillColor('#ff00ff')->setFillOpacity(0.25)->setStrokeColor("#00ff00")->setStrokeOpacity(0.75)->setStrokeWeight(2.5);
+            $gmap->addPolygon($polygon);
+
+
+            //second map
+            $gmap2 = Gmap::factory('map2')->addMarker(Gmap_Marker::factory('Test on 2 map', 50.7, 14.0)->setContent('Marker on second map'));
+
+            $this->template->content = $gmap->render() . $gmap2->render();
+        } // function
+
+
 
 ## Javascript access
 

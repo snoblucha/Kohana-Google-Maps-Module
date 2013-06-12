@@ -20,7 +20,7 @@ class Gmap_Maptype {
         return $this->value;
     }
 
-    
+
 
     public static function ROAD()
     {
@@ -29,7 +29,7 @@ class Gmap_Maptype {
 
     public static function SATTELITE()
     {
-        return new Gmap_Maptype(self::MAPTYPE_SATTELITE);
+        return new Gmap_Maptype(self::MAPTYPE_SATELLITE);
     }
 
     public static function HYBRID()

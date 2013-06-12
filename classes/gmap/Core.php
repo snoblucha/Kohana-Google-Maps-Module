@@ -42,6 +42,12 @@ class Gmap_Core {
 
     /**
      *
+     * @var Gmap_Bounds
+     */
+    private $bounds;
+
+    /**
+     *
      * @var Gmap_Controls
      */
     private $controls;
@@ -98,8 +104,11 @@ class Gmap_Core {
         $this->setZoom($config->get('zoom'));
         $this->setSize($config->get('width'), $config->get('width'));
 
+        self::setSensor($config->get('sensor'));
+
 
         $this->controls = new Gmap_Controls();
+        $this->bounds = new Gmap_Bounds();
     }
 
     public function getId()
@@ -119,6 +128,85 @@ class Gmap_Core {
     public function getControls()
     {
         return $this->controls;
+    }
+
+    public function getPixelValue($value)
+    {
+
+        if (strpos($value, '%'))
+        {
+            $value = 1024 * substr($value, -1) / 100;
+        }
+        else
+        {
+            $value = substr($value,0, -2); // else just remove px form the end
+        }
+        return $value;
+    }
+
+    /**
+     * Get the boundaries of the objects on the map
+     * @return Gmap_Bounds
+     */
+    public function getBounds()
+    {
+        return $this->bounds;
+    }
+
+
+    /**
+     * Auto zoom map
+     * @param int $min_zoom minimal zoom to keep. If not set, the already set value is used. (From config or set before)
+     * @return Gmap
+     */
+    public function autoZoom($min_zoom = null)
+    {
+        if ($min_zoom === null)
+        {
+            $min_zoom = $this->zoom;
+        }
+
+        $bounds = $this->getBounds();
+
+        $width = $this->getPixelValue($this->getWidth());
+        $height = $this->getPixelValue($this->getHeight());
+
+        $top = $bounds->getTop();
+        $bottom = $bounds->getBottom();
+
+        $dlat = abs($top->getLat() - $bottom->getLat());
+        $dlon = abs($top->getLng() - $bottom->getLng());
+
+        //single bound
+        if ($dlat == 0 && $dlon == 0)
+        {
+            $this->zoom = $min_zoom; //keep set, or passed in
+        }
+        else
+        {
+
+            // Center latitude in radians
+            $clat = pi() * ($bottom->getLat()+ $top->getLat()) / 360.;
+
+            $C = 0.0000107288;
+            $z0 = ceil(log($dlat / ($C * $height)) / log(2));
+            $z1 = ceil(log($dlon / ($C * $width * cos($clat))) / log(2));
+            $this->zoom = 16 - (($z1 > $z0) ? $z1 : $z0);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the center of the map. It is calculated from all objects
+     * @return Gmap
+     */
+    public function autoCenter()
+    {
+        $center = $this->bounds->getCenter();
+
+        $this->setCenter($center->getLat(), $center->getLng());
+        return $this;
     }
 
     /**
@@ -148,6 +236,7 @@ class Gmap_Core {
     public function addMarker(Gmap_Marker $marker)
     {
         $this->markers[$marker->getId()] = $marker;
+        $this->bounds->addMarker($marker);
         return $this;
     }
 
@@ -170,6 +259,7 @@ class Gmap_Core {
     public function addPolygon(Gmap_Polygon $polygon)
     {
         $this->polygons[$polygon->getId()] = $polygon;
+        $this->bounds->addPolyline($polygon);
         return $this;
     }
 
@@ -182,6 +272,7 @@ class Gmap_Core {
     public function addPolyline(Gmap_Polyline $polyline)
     {
         $this->polylines[$polyline->getId()] = $polyline;
+        $this->bounds->addPolyline($polyline);
         return $this;
     }
 
@@ -204,7 +295,7 @@ class Gmap_Core {
      * @param string $view Defines a view for rendering.
      * @return string
      */
-    public function render($view = '', $force_enable = false)
+    public function render($view = '')
     {
         // Bind the necessary variables.
         $this->view = View::factory($view ? $view : $this->view)
@@ -215,9 +306,7 @@ class Gmap_Core {
                 ->bind('instance', $this);
 
         // Render the view.
-        $result = (!self::$enabled || $force_enable ? View::factory('gmap_enable')
-                                ->render() : '')
-                . $this->view->render();
+        $result = Gmap::enable() . $this->view->render();
         self::$enabled = true;
         return $result;
     }
@@ -275,13 +364,20 @@ class Gmap_Core {
      */
     public function setCenter($lat = NULL, $lng = NULL)
     {
-        if ($lat != NULL)
+        if ($lat == null && $lng == null)
         {
-            $this->lat = Gmap::validate_latitude($lat);
+            $this->autoCenter();
         }
-        if ($lng != NULL)
+        else
         {
-            $this->lng = Gmap::validate_longitude($lng);
+            if ($lat != NULL)
+            {
+                $this->lat = Gmap::validate_latitude($lat);
+            }
+            if ($lng != NULL)
+            {
+                $this->lng = Gmap::validate_longitude($lng);
+            }
         }
         return $this;
     }
@@ -298,8 +394,10 @@ class Gmap_Core {
     /**
      * Set the sensor-parameter for the google-api.
      *
+     * Static method. Can be called before some map render or Gmap::enable();
+     * setting parameter for inclusion of the map script;
+     *
      * @param boolean $sensor
-     * @return Gmap
      */
     public static function setSensor($sensor)
     {
@@ -309,8 +407,6 @@ class Gmap_Core {
         } // if
 
         self::$sensor = $sensor;
-
-        return $this;
     }
 
 // function
@@ -387,6 +483,29 @@ class Gmap_Core {
         } // if
 
         return $lng;
+    }
+
+    /**
+     * Returns the script line for including Map::api
+     *
+     * this method is called on first render of any script.
+     * If once enabled you can get the string by setting $force_enable param to true
+     *
+     * @uses self::$sensor For setting the sensor in link
+     * @param boolean $force_enable get the string despite the enabled static flag
+     * @return string
+     */
+    public static function enable($force_enable = false)
+    {
+        if (self::$enabled || $force_enable)
+        {
+            self::$enabled = true; //set the enabled flag
+            return View::factory('gmap_enable')->render();
+        }
+        else
+        {
+            return '';
+        }
     }
 
 }
