@@ -63,7 +63,11 @@ Kohana::modules(array(
         $gmap-&gt;addMarker(Gmap_Marker::factory('test_no_content_icon', 50.2, 14.4)-&gt;setIcon('/img/heating-and-aircon.png'));
 
         //geocoding
-        $gmap-&gt;addGeocode(Gmap_Geocode::geocode('adresa','Anezky Ceske 629/3, Usti nad Labem'));
+        $find_address = Gmap_Geocode::geocode('adresa','Anezky Ceske 629/3, Usti nad Labem');
+
+        //on geocode success will be called javascript function saveGps(request)
+        $find_address-&gt;setOnSuccess('saveGps');
+        $gmap-&gt;addGeocode($find_address);
 
         //polyline
 
@@ -171,4 +175,3 @@ can control map movement and geocode saving from the links.</p>
     });
 &lt;/script&gt;
 </code></pre>
-

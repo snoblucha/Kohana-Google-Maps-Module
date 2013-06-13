@@ -35,6 +35,8 @@ Then you'll just echo an instance of the gmap class in your action... For exampl
 		$this->template->map = Gmap::factory();
 	} // function
 
+
+
 This is a more advanced example with usage of various options...
 
 	public function action_index()
@@ -58,7 +60,11 @@ This is a more advanced example with usage of various options...
             $gmap->addMarker(Gmap_Marker::factory('test_no_content_icon', 50.2, 14.4)->setIcon('/img/heating-and-aircon.png'));
 
             //geocoding
-            $gmap->addGeocode(Gmap_Geocode::geocode('adresa','Anezky Ceske 629/3, Usti nad Labem'));
+            $find_address = Gmap_Geocode::geocode('adresa','Anezky Ceske 629/3, Usti nad Labem');
+
+            //on geocode success will be called javascript function saveGps(request)
+            $find_address->setOnSuccess('saveGps');
+            $gmap->addGeocode($find_address);
 
             //polyline
 

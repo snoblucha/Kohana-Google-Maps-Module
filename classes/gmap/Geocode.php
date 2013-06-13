@@ -6,6 +6,7 @@ class Gmap_Geocode extends Gmap_Marker {
     private $bounds = null;
     private $region = null;
     private $language = null;
+    private $onSuccess = null;
 
     public function getBounds()
     {
@@ -27,6 +28,28 @@ class Gmap_Geocode extends Gmap_Marker {
     public function setBounds($bounds)
     {
         $this->bounds = $bounds;
+        return $this;
+    }
+
+    /**
+     * Set onSuccess function. This function will be called by javascript on successful
+     * geocoding. The function will be passed a request object with set lat and lng
+     * It is this object's javascript representation  with filled lat and lng.
+     *
+     * {
+     *      address: 'street, city',
+     *      lal : 15.255
+     *      lng : 15.5587
+     *      onSuccess: value of this func
+     *      region : if set.
+     *  }
+     *
+     * @param String $onSuccess
+     * @return Gmap_Geocode
+     */
+    public function setOnSuccess($onSuccess)
+    {
+        $this->onSuccess = $onSuccess;
         return $this;
     }
 
@@ -88,6 +111,10 @@ class Gmap_Geocode extends Gmap_Marker {
         if ($this->region != null)
         {
             $res['region'] = $this->region;
+        }
+        if ($this->onSuccess != null)
+        {
+            $res['onSuccess'] = $this->onSuccess;
         }
 
         return parent::getOptions() + $res;

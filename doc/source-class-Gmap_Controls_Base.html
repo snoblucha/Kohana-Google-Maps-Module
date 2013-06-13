@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File classes/gmap/Controls/Base.php | Kohana-Google-Maps-Module</title>
+
+	<script type="text/javascript" src="resources/combined.js?3026525942"></script>
+	<script type="text/javascript" src="elementlist.js?1928222596"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li><a href="package-gmap.html">gmap</a>
+						</li>
+				<li class="active"><a href="package-None.html">None</a>
+						</li>
+				<li><a href="package-PHP.html">PHP</a>
+						</li>
+				<li><a href="package-Unittest.html">Unittest</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Gmap_Bounds.html">Gmap_Bounds</a></li>
+				<li><a href="class-Gmap_Controls.html">Gmap_Controls</a></li>
+				<li class="active"><a href="class-Gmap_Controls_Base.html">Gmap_Controls_Base</a></li>
+				<li><a href="class-Gmap_Controls_Maptype.html">Gmap_Controls_Maptype</a></li>
+				<li><a href="class-Gmap_Controls_Navigation.html">Gmap_Controls_Navigation</a></li>
+				<li><a href="class-Gmap_Controls_Scale.html">Gmap_Controls_Scale</a></li>
+				<li><a href="class-Gmap_Geocode.html">Gmap_Geocode</a></li>
+				<li><a href="class-Gmap_Maptype.html">Gmap_Maptype</a></li>
+				<li><a href="class-Gmap_Marker.html">Gmap_Marker</a></li>
+				<li><a href="class-Gmap_Object.html">Gmap_Object</a></li>
+				<li><a href="class-Gmap_Polygon.html">Gmap_Polygon</a></li>
+				<li><a href="class-Gmap_Polyline.html">Gmap_Polyline</a></li>
+			</ul>
+
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-None.html" title="Summary of None"><span>Package</span></a>
+			</li>
+			<li>
+				<a href="class-Gmap_Controls_Base.html" title="Summary of Gmap_Controls_Base"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a>
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a><span class="php-keyword1">class</span> <a id="Gmap_Controls_Base" href="#Gmap_Controls_Base">Gmap_Controls_Base</a> {
+</span><span id="4" class="l"><a class="l" href="#4"> 4: </a>
+</span><span id="5" class="l"><a class="l" href="#5"> 5: </a>    <span class="php-keyword1">const</span> <a id="POSITION_TOP" href="#POSITION_TOP">POSITION_TOP</a> = <span class="php-quote">'top'</span>;
+</span><span id="6" class="l"><a class="l" href="#6"> 6: </a>    <span class="php-keyword1">const</span> <a id="POSITION_LEFT" href="#POSITION_LEFT">POSITION_LEFT</a> = <span class="php-quote">'left'</span>;
+</span><span id="7" class="l"><a class="l" href="#7"> 7: </a>    <span class="php-keyword1">const</span> <a id="POSITION_RIGHT" href="#POSITION_RIGHT">POSITION_RIGHT</a> = <span class="php-quote">'right'</span>;
+</span><span id="8" class="l"><a class="l" href="#8"> 8: </a>    <span class="php-keyword1">const</span> <a id="POSITION_BOTTOM" href="#POSITION_BOTTOM">POSITION_BOTTOM</a> = <span class="php-quote">'bottom'</span>;
+</span><span id="9" class="l"><a class="l" href="#9"> 9: </a>    <span class="php-keyword1">const</span> <a id="POSITION_BOTTOM_RIGHT" href="#POSITION_BOTTOM_RIGHT">POSITION_BOTTOM_RIGHT</a> = <span class="php-quote">'bottom_right'</span>;
+</span><span id="10" class="l"><a class="l" href="#10">10: </a>    <span class="php-keyword1">const</span> <a id="POSITION_BOTTOM_LEFT" href="#POSITION_BOTTOM_LEFT">POSITION_BOTTOM_LEFT</a> = <span class="php-quote">'bottom_left'</span>;
+</span><span id="11" class="l"><a class="l" href="#11">11: </a>    <span class="php-keyword1">const</span> <a id="POSITION_TOP_LEFT" href="#POSITION_TOP_LEFT">POSITION_TOP_LEFT</a> = <span class="php-quote">'top_left'</span>;
+</span><span id="12" class="l"><a class="l" href="#12">12: </a>    <span class="php-keyword1">const</span> <a id="POSITION_TOP_RIGHT" href="#POSITION_TOP_RIGHT">POSITION_TOP_RIGHT</a> = <span class="php-quote">'top_right'</span>;
+</span><span id="13" class="l"><a class="l" href="#13">13: </a>
+</span><span id="14" class="l"><a class="l" href="#14">14: </a>
+</span><span id="15" class="l"><a class="l" href="#15">15: </a>
+</span><span id="16" class="l"><a class="l" href="#16">16: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$display" href="#$display">$display</a></span> = <span class="php-keyword1">true</span>;
+</span><span id="17" class="l"><a class="l" href="#17">17: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$position" href="#$position">$position</a></span>;
+</span><span id="18" class="l"><a class="l" href="#18">18: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-var"><a id="$positions" href="#$positions">$positions</a></span> = <span class="php-keyword1">array</span>(
+</span><span id="19" class="l"><a class="l" href="#19">19: </a>        <span class="php-quote">'top'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.TOP'</span>,
+</span><span id="20" class="l"><a class="l" href="#20">20: </a>        <span class="php-quote">'top_left'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.TOP_LEFT'</span>,
+</span><span id="21" class="l"><a class="l" href="#21">21: </a>        <span class="php-quote">'top_right'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.TOP_RIGHT'</span>,
+</span><span id="22" class="l"><a class="l" href="#22">22: </a>        <span class="php-quote">'bottom'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.BOTTOM'</span>,
+</span><span id="23" class="l"><a class="l" href="#23">23: </a>        <span class="php-quote">'bottom_left'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.BOTTOM_LEFT'</span>,
+</span><span id="24" class="l"><a class="l" href="#24">24: </a>        <span class="php-quote">'bottom_right'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.BOTTOM_RIGHT'</span>,
+</span><span id="25" class="l"><a class="l" href="#25">25: </a>        <span class="php-quote">'left'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.LEFT'</span>,
+</span><span id="26" class="l"><a class="l" href="#26">26: </a>        <span class="php-quote">'right'</span> =&gt; <span class="php-quote">'google.maps.ControlPosition.RIGHT'</span>,
+</span><span id="27" class="l"><a class="l" href="#27">27: </a>    );
+</span><span id="28" class="l"><a class="l" href="#28">28: </a>
+</span><span id="29" class="l"><a class="l" href="#29">29: </a>
+</span><span id="30" class="l"><a class="l" href="#30">30: </a>    <span class="php-comment">/**
+</span></span><span id="31" class="l"><a class="l" href="#31">31: </a><span class="php-comment">     * Set the position of the controls
+</span></span><span id="32" class="l"><a class="l" href="#32">32: </a><span class="php-comment">     * @param String $position Use constant from this class!
+</span></span><span id="33" class="l"><a class="l" href="#33">33: </a><span class="php-comment">     * @return Gmap_Controls_Base
+</span></span><span id="34" class="l"><a class="l" href="#34">34: </a><span class="php-comment">     * @throws UnexpectedValueException
+</span></span><span id="35" class="l"><a class="l" href="#35">35: </a><span class="php-comment">     */</span>
+</span><span id="36" class="l"><a class="l" href="#36">36: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_setPosition" href="#_setPosition">setPosition</a>(<span class="php-var">$position</span>){
+</span><span id="37" class="l"><a class="l" href="#37">37: </a>        <span class="php-keyword1">if</span>(!<span class="php-keyword1">isset</span>(self::<span class="php-var">$positions</span>[<span class="php-var">$position</span>])){
+</span><span id="38" class="l"><a class="l" href="#38">38: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> UnexpectedValueException(<span class="php-quote">&quot;Unknown position: </span><span class="php-var">$position</span><span class="php-quote">&quot;</span>);
+</span><span id="39" class="l"><a class="l" href="#39">39: </a>        } <span class="php-keyword1">else</span> {
+</span><span id="40" class="l"><a class="l" href="#40">40: </a>            <span class="php-var">$this</span>-&gt;position = Arr::get(self::<span class="php-var">$positions</span>,<span class="php-var">$position</span>);
+</span><span id="41" class="l"><a class="l" href="#41">41: </a>        }
+</span><span id="42" class="l"><a class="l" href="#42">42: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="43" class="l"><a class="l" href="#43">43: </a>    }
+</span><span id="44" class="l"><a class="l" href="#44">44: </a>
+</span><span id="45" class="l"><a class="l" href="#45">45: </a>    <span class="php-comment">/**
+</span></span><span id="46" class="l"><a class="l" href="#46">46: </a><span class="php-comment">     * Is visible?
+</span></span><span id="47" class="l"><a class="l" href="#47">47: </a><span class="php-comment">     * @param boolean $display
+</span></span><span id="48" class="l"><a class="l" href="#48">48: </a><span class="php-comment">     * @return Gmap_Controls_Base Description
+</span></span><span id="49" class="l"><a class="l" href="#49">49: </a><span class="php-comment">     */</span>
+</span><span id="50" class="l"><a class="l" href="#50">50: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_setDisplay" href="#_setDisplay">setDisplay</a>(<span class="php-var">$display</span>)
+</span><span id="51" class="l"><a class="l" href="#51">51: </a>    {
+</span><span id="52" class="l"><a class="l" href="#52">52: </a>        <span class="php-var">$this</span>-&gt;display = <span class="php-var">$display</span>;
+</span><span id="53" class="l"><a class="l" href="#53">53: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>;
+</span><span id="54" class="l"><a class="l" href="#54">54: </a>    }
+</span><span id="55" class="l"><a class="l" href="#55">55: </a>
+</span><span id="56" class="l"><a class="l" href="#56">56: </a>
+</span><span id="57" class="l"><a class="l" href="#57">57: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_getDisplay" href="#_getDisplay">getDisplay</a>()
+</span><span id="58" class="l"><a class="l" href="#58">58: </a>    {
+</span><span id="59" class="l"><a class="l" href="#59">59: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;display;
+</span><span id="60" class="l"><a class="l" href="#60">60: </a>    }
+</span><span id="61" class="l"><a class="l" href="#61">61: </a>
+</span><span id="62" class="l"><a class="l" href="#62">62: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_getPosition" href="#_getPosition">getPosition</a>()
+</span><span id="63" class="l"><a class="l" href="#63">63: </a>    {
+</span><span id="64" class="l"><a class="l" href="#64">64: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;position;
+</span><span id="65" class="l"><a class="l" href="#65">65: </a>    }
+</span><span id="66" class="l"><a class="l" href="#66">66: </a>
+</span><span id="67" class="l"><a class="l" href="#67">67: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_getOptions" href="#_getOptions">getOptions</a>(){
+</span><span id="68" class="l"><a class="l" href="#68">68: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">array</span>(
+</span><span id="69" class="l"><a class="l" href="#69">69: </a>            <span class="php-quote">'display'</span> =&gt; <span class="php-var">$this</span>-&gt;display,
+</span><span id="70" class="l"><a class="l" href="#70">70: </a>            <span class="php-quote">'position'</span> =&gt; <span class="php-var">$this</span>-&gt;position,
+</span><span id="71" class="l"><a class="l" href="#71">71: </a>        );
+</span><span id="72" class="l"><a class="l" href="#72">72: </a>    }
+</span><span id="73" class="l"><a class="l" href="#73">73: </a>
+</span><span id="74" class="l"><a class="l" href="#74">74: </a>
+</span><span id="75" class="l"><a class="l" href="#75">75: </a>
+</span><span id="76" class="l"><a class="l" href="#76">76: </a>
+</span><span id="77" class="l"><a class="l" href="#77">77: </a></span>}</code></pre>
+
+	<div id="footer">
+		Kohana-Google-Maps-Module API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
