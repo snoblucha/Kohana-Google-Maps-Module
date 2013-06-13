@@ -10,11 +10,18 @@ return array (
 	// Default zoom-level.
 	'zoom' => 12,
 
+
+
 	// Default "sensor" setting - Used for mobile devices.
 	'sensor' => FALSE,
 
+        //should map be enabled automatically by default? It means, that at first render of
+        // any map, also Gmap::enable() is included in output. See Readme for more details.
+        'disableAutoEnable' => FALSE,
+
 	// Default map-type.
 	'maptype' => 'road', //satellite, hybrid, terrain
+
 
 	// Default view-options.
 	'view' => 'gmap',

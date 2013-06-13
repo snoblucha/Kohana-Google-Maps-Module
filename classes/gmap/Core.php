@@ -34,7 +34,7 @@ class Gmap_Core {
      * @var boolean
      */
     private static $sensor = false;
-    protected static $enabled = false;
+    private static $enabled = false;
     protected static $instances = array();
     private $markers = array();
     private $polylines = array();
@@ -105,6 +105,7 @@ class Gmap_Core {
         $this->setSize($config->get('width'), $config->get('width'));
 
         self::setSensor($config->get('sensor'));
+        self::setEnabled($config->get('disableAutoEnable'));
 
 
         $this->controls = new Gmap_Controls();
@@ -139,7 +140,7 @@ class Gmap_Core {
         }
         else
         {
-            $value = substr($value,0, -2); // else just remove px form the end
+            $value = substr($value, 0, -2); // else just remove px form the end
         }
         return $value;
     }
@@ -152,7 +153,6 @@ class Gmap_Core {
     {
         return $this->bounds;
     }
-
 
     /**
      * Auto zoom map
@@ -186,7 +186,7 @@ class Gmap_Core {
         {
 
             // Center latitude in radians
-            $clat = pi() * ($bottom->getLat()+ $top->getLat()) / 360.;
+            $clat = pi() * ($bottom->getLat() + $top->getLat()) / 360.;
 
             $C = 0.0000107288;
             $z0 = ceil(log($dlat / ($C * $height)) / log(2));
@@ -308,6 +308,7 @@ class Gmap_Core {
         // Render the view.
         $result = Gmap::enable() . $this->view->render();
         self::$enabled = true;
+
         return $result;
     }
 
@@ -497,7 +498,7 @@ class Gmap_Core {
      */
     public static function enable($force_enable = false)
     {
-        if (self::$enabled || $force_enable)
+        if (!self::$enabled || $force_enable)
         {
             self::$enabled = true; //set the enabled flag
             return View::factory('gmap_enable')->render();
@@ -506,6 +507,15 @@ class Gmap_Core {
         {
             return '';
         }
+    }
+
+    /**
+     * Set the $enabled flag to class.
+     * @param boolean $state new value. True by default
+     */
+    public static function setEnabled($state = true)
+    {
+        self::$enabled = $state;
     }
 
 }
